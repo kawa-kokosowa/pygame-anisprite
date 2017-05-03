@@ -1,4 +1,4 @@
-# pygame-anisprite
+# PyGame-AniSprite
 
 [![GitHub
 license](https://img.shields.io/github/license/lily-mayfield/pygame-anisprite.svg?style=flat-square)](https://raw.githubusercontent.com/lily-mayfield/pygame-anisprite/master/LICENSE)
@@ -9,21 +9,22 @@ Climate](https://img.shields.io/codeclimate/github/lily-mayfield/pygame-anisprit
 [![Coverage
 Status](https://img.shields.io/coveralls/lily-mayfield/pygame-anisprite.svg)](https://coveralls.io/github/lily-mayfield/pygame-anisprite)
 
-`py is a 2D game engine written with Python (2 *and* 3) and pygame.
+PyGame-AniSprite is a 2D game engine for Python (2 *and* 3)/PyGame. What's
+special about this project is how an `AnimatedSprite` is almost
+indistinguishable from a normal
+[`pygame.sprite.Sprite`](https://www.pygame.org/docs/ref/sprite.html#pygame.sprite.Sprite).
 
-![pygame-anisprite in action](https://github.com/lily-mayfield/pygame-anisprite/blob/master/game-demo.gif)
+Written because I didn't like `pyganim`...
+
+Split off from my [Sappho game engine](https://github.com/lily-mayfield/sappho).
 
 Be sure to checkout the `AUTHORS.md`!
-
-Written because I didn't like pyganim...
-
-Split off from my sappho engine...
 
 ## Design Philosophy
 
   1. Don't interfere with the way people build their pygame games
   2. We are not automating game logic
-  3. Sappho modules _may not_ import other Sappho modules
+  3. PyGame-AniSprite modules _may not_ import other PyGame-AniSprite modules
   4. Inherit from pygame objects when possible; use conventional
      pygame models/architecture.
   5. Consistency.
@@ -47,7 +48,5 @@ Install pygame:
     http://www.pygame.org/download.shtml
 
 Install `pygame-anisprite`: `pip install -r requirements/main.txt .`
-
-We also have some good docs: http://pygame-anisprite.lilymayfield.pro/
 
 If you wanna contribute, please read `CONTRIBUTING.md`!

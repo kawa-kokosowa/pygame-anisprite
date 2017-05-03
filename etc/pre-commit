@@ -4,7 +4,7 @@
 
 echo "running pre-commit hook..."
 
-py.test tests --doctest-modules --pep8 sappho -v --cov-report term-missing --cov=sappho
+py.test tests --doctest-modules --pep8 pygame_anisprite -v --cov-report term-missing --cov=pygame_anisprite
 RESULT=$?
 
 if [ $RESULT -ne 0 ]; then

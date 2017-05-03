@@ -1,7 +1,7 @@
 Animated sprites
 ================
 
-.. py:module:: sappho.animatedsprite
+.. py:module:: pygame_anisprite.anisprite
 
 Tools to create animated sprites in Pygame. This module
 also provides a :class:`FrameAnchors` system, so you may

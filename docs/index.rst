@@ -1,4 +1,4 @@
-Welcome to Sappho's documentation!
+Welcome to PyGame-AniSprite's documentation!
 ==================================
 
 Contents:
@@ -6,11 +6,7 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
-   camera
-   layers
-   tilemap
-   animatedsprite
-   tutorials/index
+   anisprite
 
 Indices and tables
 ==================

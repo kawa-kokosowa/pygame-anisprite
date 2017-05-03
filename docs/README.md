@@ -1,4 +1,4 @@
-# Sappho Documentation
+# PyGame-AniSprite Documentation
 
 To build the documentation, you must have Sphinx, at least version 1.3,
 installed. You can install it via pip:

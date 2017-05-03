@@ -8,22 +8,22 @@ try:
 except ImportError:
     RTD_THEME = False
 
-# Add the Sappho repository directory to the module
+# Add the PyGame-AniSprite repository directory to the module
 # search path
 sys.path.insert(0, os.path.abspath('..'))
 
 # Project information
-project = u'Sappho'
-copyright = u'2016, Lillian Gardenia Seabreeze'
-author = u'Lillian Gardenia Seabreeze'
+project = u'PyGame-AniSprite'
+copyright = u'2017, Lily Mayfield'
+author = u'Lily Mayfield'
 
-# Read the version information from the Sappho code
-sappho_init_path = os.path.join(os.path.abspath('..'),
-                                'sappho',
-                                '__init__.py') 
+# Read the version information from the PyGame-AniSprite code
+init_path = os.path.join(os.path.abspath('..'),
+                         'pygame_anisprite',
+                         '__init__.py') 
 
 locals = {}
-exec(open(sappho_init_path).read(),
+exec(open(init_path).read(),
      {"__name__": "__main__"}, 
      locals)
 
