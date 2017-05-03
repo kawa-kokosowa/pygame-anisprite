@@ -1,0 +1,575 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>pygame_anisprite.anisprite &mdash; PyGame-AniSprite 1.0.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="PyGame-AniSprite 1.0.0 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> PyGame-AniSprite
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../anisprite.html">Animated sprites</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">PyGame-AniSprite</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>pygame_anisprite.anisprite</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for pygame_anisprite.anisprite</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Painless animated sprites which are pygame.sprite.Sprite objects.</span>
+
+<span class="sd">Animated sprites from GIF, and all YOU have to know is to `update_state`!</span>
+<span class="sd">You just have to call `update_state` once per loop with the timedelta:</span>
+
+<span class="sd">  &gt;&gt;&gt; AnimatedSprite.from_gif(&#39;example.gif&#39;)  # doctest: +SKIP</span>
+<span class="sd">  &gt;&gt;&gt; timedelta = clock.get_time()  # doctest: +SKIP</span>
+<span class="sd">  &gt;&gt;&gt; animated_sprite.update_state(timedelta)  # doctest: +SKIP</span>
+
+<span class="sd">Treat it like a normal pygame sprite, because it is! It&#39;s that easy!</span>
+
+<span class="sd">A word on `rect` and `mask`:</span>
+<span class="sd">    In pygame, `Sprite` has the `rect` attribute and optionally the</span>
+<span class="sd">    `mask` attribute. Both `rect` and `mask` sprite attributes are the</span>
+<span class="sd">    primary data used in collision detection.</span>
+
+<span class="sd">    In this implementation, `Frame` and `AnimatedSprite` both have the</span>
+<span class="sd">    `mask` and `rect` attributes. Don&#39;t use `rect for positional stuff,</span>
+<span class="sd">    e.g., don&#39;t do something like `animatedsprite.rect.topleft = (11, 22)`.</span>
+<span class="sd">    The `mask` and `rect` of an `AnimatedSprite` are merely a reference to</span>
+<span class="sd">    the current `Frame`&#39;s `rect` and `mask`! When you load an animated</span>
+<span class="sd">    sprite, you can specify a threshold:</span>
+
+<span class="sd">      &gt;&gt;&gt; AnimatedSprite.from_gif(&#39;example.gif&#39;,</span>
+<span class="sd">      ...                         mask_threshold=254)  # doctest: +SKIP</span>
+
+<span class="sd">    Whereas, the threshold denotes the alpha transparency value for a</span>
+<span class="sd">    pixel, which is opaque enough to be &quot;set&quot;.</span>
+
+<span class="sd">What&#39;s supported:</span>
+<span class="sd">    Right now there&#39;s only support for GIFs, but I&#39;d like to expand that</span>
+<span class="sd">    (especially since GIFs can&#39;t really take advantage of alpha</span>
+<span class="sd">    transparency).</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">pygame</span>
+<span class="kn">from</span> <span class="nn">PIL</span> <span class="k">import</span> <span class="n">Image</span>
+
+
+<span class="c1"># NOTE: could be a sprite...</span>
+<span class="k">class</span> <span class="nc">Frame</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A frame of an AnimatedSprite animation.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        surface (pygame.Surface): The pygame image which is used</span>
+<span class="sd">            for a frame of an animation.</span>
+<span class="sd">        mask (pygame.Mask): Mask automatically generated from the</span>
+<span class="sd">            supplied surface (see above). Only exists if mask_threshold</span>
+<span class="sd">            was &gt;0 on init.</span>
+<span class="sd">        duration (integer): Milliseconds this frame lasts. How</span>
+<span class="sd">            long this frame is displayed in corresponding animation.</span>
+<span class="sd">        start_time (integer): The animation position in milleseconds,</span>
+<span class="sd">            when this frame will start being displayed.</span>
+
+<span class="sd">    See Also:</span>
+<span class="sd">        * AnimatedSprite.frames_from_gif()</span>
+<span class="sd">        * AnimatedSprite.animation_position</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">surface</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">duration</span><span class="p">,</span> <span class="n">mask_threshold</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create a frame using a pygame surface, the start time,</span>
+<span class="sd">        and the duration time.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            surface (pygame.Surface): The surface/image for this</span>
+<span class="sd">                frame.</span>
+<span class="sd">            start_time (int): Millisecond this frame starts. This</span>
+<span class="sd">                frame is a part of a larger series of frames and</span>
+<span class="sd">                in order to render the animation properly we</span>
+<span class="sd">                need to know when each frame begins to be drawn,</span>
+<span class="sd">                while duration signifies when it ends.</span>
+<span class="sd">            duration (integer): Milleseconds this frame lasts. See:</span>
+<span class="sd">                start_time argument description.</span>
+<span class="sd">            mask_threshold (int): Valid values 0-254. Alpha values</span>
+<span class="sd">                ABOVE this provided number are marked as &quot;solid&quot;/</span>
+<span class="sd">                collidable/set. If this is not greater than zero,</span>
+<span class="sd">                the mask is not generated.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">surface</span> <span class="o">=</span> <span class="n">surface</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">duration</span> <span class="o">=</span> <span class="n">duration</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start_time</span> <span class="o">=</span> <span class="n">start_time</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">end_time</span> <span class="o">=</span> <span class="n">start_time</span> <span class="o">+</span> <span class="n">duration</span>
+
+        <span class="k">if</span> <span class="n">mask_threshold</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="n">pygame</span><span class="o">.</span><span class="n">mask</span><span class="o">.</span><span class="n">from_surface</span><span class="p">(</span><span class="n">surface</span><span class="p">,</span> <span class="n">mask_threshold</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="s2">&quot;&lt;Frame duration(</span><span class="si">%s</span><span class="s2">) start_time(</span><span class="si">%s</span><span class="s2">) end_time(</span><span class="si">%s</span><span class="s2">)&gt;&quot;</span>
+
+        <span class="k">return</span> <span class="n">s</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">duration</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_time</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_time</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="AnimatedSprite"><a class="viewcode-back" href="../../anisprite.html#pygame_anisprite.anisprite.AnimatedSprite">[docs]</a><span class="k">class</span> <span class="nc">AnimatedSprite</span><span class="p">(</span><span class="n">pygame</span><span class="o">.</span><span class="n">sprite</span><span class="o">.</span><span class="n">Sprite</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Animated sprite with mask, loaded from GIF.</span>
+
+<span class="sd">    Supposed to be mostly uniform with the Sprite API.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        total_duration (int): The total duration of of this</span>
+<span class="sd">            animation in milliseconds.</span>
+<span class="sd">        image (pygame.Surface): Current surface belonging to</span>
+<span class="sd">            the active frame. Set once per tick through</span>
+<span class="sd">            the AnimatedSprite.update_state() method.</span>
+<span class="sd">        rect (pygame.Rect): Does not reflect position, only</span>
+<span class="sd">            area. Updated once per tick, to reflect current</span>
+<span class="sd">            frame&#39;s rect, in AnimatedSprite.update_state().</span>
+<span class="sd">        mask (pygame.Mask): If the first frame had a mask</span>
+<span class="sd">            attribute, then we assume all do, and this</span>
+<span class="sd">            (optional) attribute points to the active</span>
+<span class="sd">            frame&#39;s mask attribute.</span>
+<span class="sd">        active_frame_index (int): Frame # which is being</span>
+<span class="sd">            rendered/to be rendered. Also updated once per</span>
+<span class="sd">            tick, see the AnimatedSprite.update_state() method.</span>
+<span class="sd">        active_frame: The current surface representing this</span>
+<span class="sd">            animation at its current animation position. Set</span>
+<span class="sd">            once per tick through the update_state() method.</span>
+<span class="sd">        animation_position (int): Animation position in</span>
+<span class="sd">            milliseconds; milleseconds elapsed in this</span>
+<span class="sd">            animation. This is used for determining</span>
+<span class="sd">            which frame to select. Set once per tick through</span>
+<span class="sd">            the AnimatedSprite.update_state() method.</span>
+
+<span class="sd">    See Also:</span>
+<span class="sd">        * :class:`pygame.sprite.Sprite`</span>
+<span class="sd">        * :class:`Frame`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="AnimatedSprite.__init__"><a class="viewcode-back" href="../../anisprite.html#pygame_anisprite.anisprite.AnimatedSprite.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frames</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create this AnimatedSprite using</span>
+<span class="sd">        a list of Frame instances.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            frames (list[Frame]): A properly assembled list of frames,</span>
+<span class="sd">                which assumes that each Frame&#39;s start_time is greater</span>
+<span class="sd">                than the previous element and is the previous element&#39;s</span>
+<span class="sd">                start time + previous element/Frame&#39;s duration. Here</span>
+<span class="sd">                is an example of aformentioned:</span>
+
+<span class="sd">                &gt;&gt;&gt; frame_one_surface = pygame.Surface((16, 16))</span>
+<span class="sd">                &gt;&gt;&gt; frame_one = Frame(frame_one_surface, 0, 100)</span>
+<span class="sd">                &gt;&gt;&gt; frame_two_surface = pygame.Surface((16, 16))</span>
+<span class="sd">                &gt;&gt;&gt; frame_two = Frame(frame_two_surface, 100, 50)</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            In the future I may add a method for verifying the</span>
+<span class="sd">            validity of Frame start_times and durations.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">AnimatedSprite</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frames</span> <span class="o">=</span> <span class="n">frames</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">total_duration</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_total_duration</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">active_frame_index</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">active_frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">active_frame_index</span><span class="p">]</span>
+
+        <span class="c1"># animation position in milliseconds</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">animation_position</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="c1"># this gets updated depending on the frame/time</span>
+        <span class="c1"># needs to be a surface.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">surface</span>
+
+        <span class="c1"># represents the animated sprite&#39;s position</span>
+        <span class="c1"># on screen.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rect</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">get_rect</span><span class="p">()</span>
+
+        <span class="c1"># making the bold assumption that if the</span>
+        <span class="c1"># first frame has a mask, as do the rest.</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;mask&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">mask</span></div>
+
+    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_index</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the frame corresponding to</span>
+<span class="sd">        the supplied frame_index.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            frame_index (int): Index number to lookup</span>
+<span class="sd">                a frame by element number in the</span>
+<span class="sd">                self.frames list.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Frame: The frame of this animation at the</span>
+<span class="sd">                specified index of frame_index.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="p">[</span><span class="n">frame_index</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">largest_frame_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the largest frame&#39;s (by area)</span>
+<span class="sd">        dimensions as tuple(int x, int y).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            tuple (x, y): pixel dimensions of the largest</span>
+<span class="sd">                frame surface in this AnimatedSprite.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">largest_frame_size</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="p">:</span>
+            <span class="n">largest_x</span><span class="p">,</span> <span class="n">largest_y</span> <span class="o">=</span> <span class="n">largest_frame_size</span>
+            <span class="n">largest_area</span> <span class="o">=</span> <span class="n">largest_x</span> <span class="o">*</span> <span class="n">largest_y</span>
+
+            <span class="n">frame_size</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">surface</span><span class="o">.</span><span class="n">get_size</span><span class="p">()</span>
+            <span class="n">frame_x</span><span class="p">,</span> <span class="n">frame_y</span> <span class="o">=</span> <span class="n">frame_size</span>
+            <span class="n">frame_area</span> <span class="o">=</span> <span class="n">frame_x</span> <span class="o">*</span> <span class="n">frame_y</span>
+
+            <span class="k">if</span> <span class="n">frame_area</span> <span class="o">&gt;</span> <span class="n">largest_area</span><span class="p">:</span>
+                <span class="n">largest_frame_size</span> <span class="o">=</span> <span class="p">(</span><span class="n">frame_size</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">largest_frame_size</span>
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="AnimatedSprite.from_gif"><a class="viewcode-back" href="../../anisprite.html#pygame_anisprite.anisprite.AnimatedSprite.from_gif">[docs]</a>    <span class="k">def</span> <span class="nf">from_gif</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path_or_readable</span><span class="p">,</span> <span class="n">mask_threshold</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The default is to create from gif bytes, but this can</span>
+<span class="sd">        also be done from other methods...</span>
+
+<span class="sd">        Create a list of surfaces (frames) and a list of their</span>
+<span class="sd">        respective frame durations from an animated GIF.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            path_or_readable (str|file-like-object): Either a string</span>
+<span class="sd">                or an object with a read() method. So, either a path</span>
+<span class="sd">                to an animated GIF, or a file-like-object/buffer of</span>
+<span class="sd">                an animated GIF.</span>
+<span class="sd">            mask_threshold (int): An optional keyword argument which</span>
+<span class="sd">                must be &gt;0 to generate masks automatically per frame.</span>
+<span class="sd">                This value is used to note which parts are opaque and</span>
+<span class="sd">                thus collidable, and which values are not. Think of</span>
+<span class="sd">                RGBA, valid values are 0-254. See also: Frame().</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            AnimatedSprite: --</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">pil_gif</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">path_or_readable</span><span class="p">)</span>
+
+        <span class="n">frame_index</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">frames</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">time_position</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">try</span><span class="p">:</span>
+
+            <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="n">duration</span> <span class="o">=</span> <span class="n">pil_gif</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;duration&#39;</span><span class="p">]</span>
+                <span class="n">frame_sprite</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">pil_image_to_pygame_surface</span><span class="p">(</span><span class="n">pil_gif</span><span class="p">)</span>
+                <span class="n">frame</span> <span class="o">=</span> <span class="n">Frame</span><span class="p">(</span><span class="n">surface</span><span class="o">=</span><span class="n">frame_sprite</span><span class="p">,</span>
+                              <span class="n">start_time</span><span class="o">=</span><span class="n">time_position</span><span class="p">,</span>
+                              <span class="n">duration</span><span class="o">=</span><span class="n">duration</span><span class="p">,</span>
+                              <span class="n">mask_threshold</span><span class="o">=</span><span class="n">mask_threshold</span><span class="p">)</span>
+                <span class="n">frames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+                <span class="n">frame_index</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">time_position</span> <span class="o">+=</span> <span class="n">duration</span>
+                <span class="n">pil_gif</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">pil_gif</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="k">except</span> <span class="ne">EOFError</span><span class="p">:</span>
+
+            <span class="k">pass</span>  <span class="c1"># end of sequence</span>
+
+        <span class="k">return</span> <span class="n">AnimatedSprite</span><span class="p">(</span><span class="n">frames</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timedelta</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Manipulate the state of this AnimatedSprite, namely</span>
+<span class="sd">        the on-screen/viewport position (not absolute) and</span>
+<span class="sd">        using the timedelta to do animation manipulations.</span>
+
+<span class="sd">        Using the game&#39;s timedelta we decipher the animation position,</span>
+<span class="sd">        which in turn allows us to locate the correct frame.</span>
+
+<span class="sd">        Sets the image attribute to the current frame&#39;s image. Updates</span>
+<span class="sd">        the rect attribute to the new relative position and frame size.</span>
+
+<span class="sd">        Warning:</span>
+<span class="sd">            Since we&#39;re changing the rect size on-the-fly, this can</span>
+<span class="sd">            get the player stuck in certain boundaries. I will be</span>
+<span class="sd">            remedying this in the future.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            timedelta (int|float): Typically from the game</span>
+<span class="sd">                clock (pygame.time.Clock) via clock.get_time().</span>
+<span class="sd">                Used to update the animation position.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">animation_position</span> <span class="o">+=</span> <span class="n">timedelta</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">animation_position</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_duration</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">animation_position</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">animation_position</span> <span class="o">%</span>
+                                       <span class="bp">self</span><span class="o">.</span><span class="n">total_duration</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">active_frame_index</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">while</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">animation_position</span> <span class="o">&gt;</span>
+               <span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">active_frame_index</span><span class="p">]</span><span class="o">.</span><span class="n">end_time</span><span class="p">):</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">active_frame_index</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="c1"># NOTE: the fact that I&#39;m using -1 here seems sloppy/hacky</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">active_frame_index</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">surface</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">rect</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">get_size</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">active_frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">active_frame_index</span><span class="p">]</span>
+
+        <span class="c1"># if we have a mask, let&#39;s update our pointer!</span>
+        <span class="c1"># again, we make the bold assumption that if</span>
+        <span class="c1"># our first frame had a mask, then the rest do.</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;mask&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">active_frame</span><span class="o">.</span><span class="n">mask</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_total_duration</span><span class="p">(</span><span class="n">frames</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the total duration of the animation in milliseconds,</span>
+<span class="sd">        milliseconds, from animation frame durations.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            frames (List[AnimatedSpriteFrame]): --</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            int: The sum of all the frame&#39;s &quot;duration&quot; attribute.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">([</span><span class="n">frame</span><span class="o">.</span><span class="n">duration</span> <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="n">frames</span><span class="p">])</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">pil_image_to_pygame_surface</span><span class="p">(</span><span class="n">pil_image</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Convert PIL Image() to RGBA pygame Surface.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            pil_image (Image): image to convert to pygame.Surface().</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            pygame.Surface: the converted image</span>
+
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; from PIL import Image</span>
+<span class="sd">            &gt;&gt;&gt; gif = Image.open(&#39;tests/resources/test-scene.gif&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; AnimatedSprite.pil_image_to_pygame_surface(gif)</span>
+<span class="sd">            &lt;Surface(10x10x32 SW)&gt;</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">image_as_string</span> <span class="o">=</span> <span class="n">pil_image</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s1">&#39;RGBA&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">tobytes</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">pygame</span><span class="o">.</span><span class="n">image</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">image_as_string</span><span class="p">,</span>
+                                       <span class="n">pil_image</span><span class="o">.</span><span class="n">size</span><span class="p">,</span>
+                                       <span class="s1">&#39;RGBA&#39;</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Lily Mayfield.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'1.0.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
