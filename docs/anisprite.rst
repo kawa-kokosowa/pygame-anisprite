@@ -12,19 +12,18 @@ AnimatedSprite overview
 -----------------------
 
 An :class:`AnimatedSprite` is typically loaded from GIF with
-:meth:`AnimatedSprite.from_file()`, which loads both
-animation and :class:`Anchor` data.
+:meth:`AnimatedSprite.from_gif()`.
 
-.. automethod:: AnimatedSprite.from_file
+.. automethod:: AnimatedSprite.from_gif
 
 So to create an :class:`AnimatedSprite` from a GIF, you'd
 do something like this code sample below:
 
->>> sprite = AnimatedSprite.from_file('somedir/walk.gif')
+>>> sprite = AnimatedSprite.from_gif('somedir/walk.gif')
 >>> sprite.image
 <Surface(10x10x32 SW)>
 
-The :meth:`AnimatedSprite.from_file()` method will build
+The :meth:`AnimatedSprite.from_gif()` method will build
 the respective :class:`Frame` objects and their
 :class:`FrameAnchors`. These frames are sent to the
 :class:`AnimatedSprite` constructor, as seen below.
@@ -37,9 +36,8 @@ Here's what an `AnimatedSprite` looks like:
 
 To update the animation, so that it progresses, you need
 to pass the :class:`pygame.time.Clock` you
-:meth:`pygame.time.Clock.tick()` in your main loop. You
-should look at the `demo.py` included from the GitHub repo,
-but here's another sample of how you'd use :class:`AnimatedSprite`::
+:meth:`pygame.time.Clock.tick()` in your main loop.
+Here's another sample of how you'd use :class:`AnimatedSprite`::
 
     pygame.init()
     screen = pygame.display.set_mode([700, 500])
@@ -58,5 +56,3 @@ but here's another sample of how you'd use :class:`AnimatedSprite`::
 
     pygame.quit()
 
-Anchoring system
-----------------
