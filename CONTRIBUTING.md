@@ -1,0 +1,50 @@
+# Rules for Contributing
+
+## Before you start (code philosophy)
+
+  * You are not allowed to import other modules from the pygame-anisprite package.
+  * Your code should be very transparent to the fact that we're using pygame,
+    that means inherit native pygame objects where possible (like surfaces
+    and sprites) and return pygame or builtin Python objects. This is "loose
+    coupling." Don't interfere with the way people build their pygame games.
+  * Other developers should not have to read about your module, as possible. To
+    be truly transparent, using pygame-anisprite should be completely intuitive to a
+    pygame developer.
+  * Simplicity and readability first
+  * Consistency
+  * Fully documented (docstrings at least)
+  * Create code that is easy to test. 100% test coverage.
+  * Don't automate "game logic"
+  * Avoid modifying foreign objects inside of a different object
+  * Use `etc/pre-commit` git hook
+
+## Acceptance criteria for pull requests
+
+First you'll want to make a branch that identifies the set of changes
+you intend to make, consider:
+
+  * `feature/collide-line-heuristics`
+  * `fix/32-animate-bug`
+  * `clean/refactor-and-add-comments`
+  * `test/tiles-raise-some-exception`
+
+Use `git checkout -b docs/sphinx-and-docstrings master`.
+
+After your branch is created, make sure each commit has a descriptive
+`git commit` message. You're invited to make a pull request for your
+branch whenever you please, but keep in mind the acceptance criteria
+for pull requests:
+
+  * Changes 100% tested with unit tests
+  * Changes reflected in the docs
+  * Docstrings thorough/complete, Google-style
+  * Follows PEP8 style
+  * Follows other conventions in code
+  * Adheres to philosophies listed in `README.md`
+  * Tests are passing, i.e., `py.test tests`
+  * Tests passing in Travis CI (tip: use `etc/pre-commit`)
+
+Once your pull request has been reviewed by one other developer
+(signified by their approval, e.g., :+1:) it may be merged to `nextrelease`,
+but that's ultimately up to Lily Mayfield, the project's mom who
+manages the project and its releases.
