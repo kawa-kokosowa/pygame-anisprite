@@ -9,6 +9,8 @@ Climate](https://img.shields.io/codeclimate/github/lily-mayfield/pygame-anisprit
 [![Coverage
 Status](https://img.shields.io/coveralls/lily-mayfield/pygame-anisprite.svg)](https://coveralls.io/github/lily-mayfield/pygame-anisprite)
 
+**WARNING: THIS IS UNRELEASED. WILL BE RELEASED WHEN BETTER DOCS...**
+
 PyGame-AniSprite is a 2D game engine for Python (2 *and* 3)/PyGame. What's
 special about this project is how an `AnimatedSprite` is almost
 indistinguishable from a normal
