@@ -1,11 +1,11 @@
 """Painless animated sprites which are pygame.sprite.Sprite objects.
 
-Animated sprites from GIF, and all YOU have to know is to `update_state`!
-You just have to call `update_state` once per loop with the timedelta:
+Animated sprites from GIF, and all YOU have to remember is to `update(timedelta)`!
+You just have to call `update()` once per loop with the timedelta:
 
   >>> AnimatedSprite.from_gif('example.gif')  # doctest: +SKIP
   >>> timedelta = clock.get_time()  # doctest: +SKIP
-  >>> animated_sprite.update_state(timedelta)  # doctest: +SKIP
+  >>> animated_sprite.update(timedelta)  # doctest: +SKIP
 
 Treat it like a normal pygame sprite, because it is! It's that easy!
 
@@ -94,6 +94,7 @@ class Frame(object):
         return s % (self.duration, self.start_time, self.end_time)
 
 
+# XXX: make sense to call it AniSprite?
 class AnimatedSprite(pygame.sprite.Sprite):
     """Animated sprite with mask, loaded from GIF.
 
