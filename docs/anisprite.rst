@@ -3,10 +3,9 @@ Animated sprites
 
 .. py:module:: pygame_anisprite.anisprite
 
-Tools to create animated sprites in Pygame. This module
-also provides a :class:`FrameAnchors` system, so you may
-line up two separate animations with
-frame-specific-coordinate data.
+PyGame-AniSprite allows you to create animated Pygame sprites.
+
+.. automodule:: pygame_anisprite.anisprite
 
 AnimatedSprite overview
 -----------------------
