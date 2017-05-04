@@ -157,12 +157,12 @@
   <h1>Source code for pygame_anisprite.anisprite</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Painless animated sprites which are pygame.sprite.Sprite objects.</span>
 
-<span class="sd">Animated sprites from GIF, and all YOU have to know is to `update_state`!</span>
-<span class="sd">You just have to call `update_state` once per loop with the timedelta:</span>
+<span class="sd">Animated sprites from GIF, and all YOU have to remember is to `update(timedelta)`!</span>
+<span class="sd">You just have to call `update()` once per loop with the timedelta:</span>
 
 <span class="sd">  &gt;&gt;&gt; AnimatedSprite.from_gif(&#39;example.gif&#39;)  # doctest: +SKIP</span>
 <span class="sd">  &gt;&gt;&gt; timedelta = clock.get_time()  # doctest: +SKIP</span>
-<span class="sd">  &gt;&gt;&gt; animated_sprite.update_state(timedelta)  # doctest: +SKIP</span>
+<span class="sd">  &gt;&gt;&gt; animated_sprite.update(timedelta)  # doctest: +SKIP</span>
 
 <span class="sd">Treat it like a normal pygame sprite, because it is! It&#39;s that easy!</span>
 
@@ -251,6 +251,7 @@
         <span class="k">return</span> <span class="n">s</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">duration</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_time</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_time</span><span class="p">)</span>
 
 
+<span class="c1"># XXX: make sense to call it AniSprite?</span>
 <div class="viewcode-block" id="AnimatedSprite"><a class="viewcode-back" href="../../anisprite.html#pygame_anisprite.anisprite.AnimatedSprite">[docs]</a><span class="k">class</span> <span class="nc">AnimatedSprite</span><span class="p">(</span><span class="n">pygame</span><span class="o">.</span><span class="n">sprite</span><span class="o">.</span><span class="n">Sprite</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Animated sprite with mask, loaded from GIF.</span>
 
