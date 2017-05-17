@@ -3,8 +3,6 @@ Animated sprites
 
 .. py:module:: pygame_anisprite.anisprite
 
-PyGame-AniSprite allows you to create animated Pygame sprites.
-
 .. automodule:: pygame_anisprite.anisprite
 
 AnimatedSprite overview

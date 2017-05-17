@@ -157,26 +157,33 @@
   <h1>Source code for pygame_anisprite.anisprite</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Painless animated sprites which are pygame.sprite.Sprite objects.</span>
 
-<span class="sd">Animated sprites from GIF, and all YOU have to remember is to `update(timedelta)`!</span>
-<span class="sd">You just have to call `update()` once per loop with the timedelta:</span>
+<span class="sd">Animated sprites are loaded from GIF, but there will be other ways</span>
+<span class="sd">very soon! When using an AnimatedSprite you must remember to update</span>
+<span class="sd">it every main loop iteration with timedelta:</span>
 
 <span class="sd">  &gt;&gt;&gt; AnimatedSprite.from_gif(&#39;example.gif&#39;)  # doctest: +SKIP</span>
 <span class="sd">  &gt;&gt;&gt; timedelta = clock.get_time()  # doctest: +SKIP</span>
 <span class="sd">  &gt;&gt;&gt; animated_sprite.update(timedelta)  # doctest: +SKIP</span>
 
-<span class="sd">Treat it like a normal pygame sprite, because it is! It&#39;s that easy!</span>
-
 <span class="sd">A word on `rect` and `mask`:</span>
-<span class="sd">    In pygame, `Sprite` has the `rect` attribute and optionally the</span>
-<span class="sd">    `mask` attribute. Both `rect` and `mask` sprite attributes are the</span>
-<span class="sd">    primary data used in collision detection.</span>
+<span class="sd">    `pygame.Sprite` has the `rect` attribute and _optionally_ the</span>
+<span class="sd">    `mask` attribute. AnimatedSprite gets those attributes from</span>
+<span class="sd">    its frames, however there are some important notes regarding</span>
+<span class="sd">    these two properties, AnimatedSprite.rect (always there) and</span>
+<span class="sd">    AnimatedSprite.mask (optional)...</span>
 
-<span class="sd">    In this implementation, `Frame` and `AnimatedSprite` both have the</span>
-<span class="sd">    `mask` and `rect` attributes. Don&#39;t use `rect for positional stuff,</span>
-<span class="sd">    e.g., don&#39;t do something like `animatedsprite.rect.topleft = (11, 22)`.</span>
-<span class="sd">    The `mask` and `rect` of an `AnimatedSprite` are merely a reference to</span>
-<span class="sd">    the current `Frame`&#39;s `rect` and `mask`! When you load an animated</span>
-<span class="sd">    sprite, you can specify a threshold:</span>
+<span class="sd">    AnimatedSprite.rect.size is updated with the current frame&#39;s</span>
+<span class="sd">    size every time you use AnimatedSprite.update(). This means you</span>
+<span class="sd">    can use AnimatedSprite.rect for position on screen or position</span>
+<span class="sd">    on map, whatever, because AnimatedSprite.rect.topleft won&#39;t change</span>
+<span class="sd">    unless _you_ change it!</span>
+
+<span class="sd">    Likewise, AnimatedSprite.mask is set to the current frame&#39;s mask,</span>
+<span class="sd">    if you told AnimatedSprite to generate a mask (it&#39;s optional).</span>
+<span class="sd">    There are plans in the near future to allow for a single custom</span>
+<span class="sd">    mask or ways to provide custom frame masks.</span>
+
+<span class="sd">    When you load an animated sprite, you can specify a threshold:</span>
 
 <span class="sd">      &gt;&gt;&gt; AnimatedSprite.from_gif(&#39;example.gif&#39;,</span>
 <span class="sd">      ...                         mask_threshold=254)  # doctest: +SKIP</span>

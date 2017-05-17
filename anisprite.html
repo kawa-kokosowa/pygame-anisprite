@@ -159,27 +159,32 @@
             
   <div class="section" id="module-pygame_anisprite.anisprite">
 <span id="animated-sprites"></span><h1>Animated sprites<a class="headerlink" href="#module-pygame_anisprite.anisprite" title="Permalink to this headline">¶</a></h1>
-<p>PyGame-AniSprite allows you to create animated Pygame sprites.</p>
 <span class="target" id="module-pygame_anisprite.anisprite"></span><p>Painless animated sprites which are pygame.sprite.Sprite objects.</p>
-<p>Animated sprites from GIF, and all YOU have to remember is to <cite>update(timedelta)</cite>!
-You just have to call <cite>update()</cite> once per loop with the timedelta:</p>
+<p>Animated sprites are loaded from GIF, but there will be other ways
+very soon! When using an AnimatedSprite you must remember to update
+it every main loop iteration with timedelta:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">AnimatedSprite</span><span class="o">.</span><span class="n">from_gif</span><span class="p">(</span><span class="s1">&#39;example.gif&#39;</span><span class="p">)</span>  
 <span class="gp">&gt;&gt;&gt; </span><span class="n">timedelta</span> <span class="o">=</span> <span class="n">clock</span><span class="o">.</span><span class="n">get_time</span><span class="p">()</span>  
 <span class="gp">&gt;&gt;&gt; </span><span class="n">animated_sprite</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">timedelta</span><span class="p">)</span>  
 </pre></div>
 </div>
-<p>Treat it like a normal pygame sprite, because it is! It&#8217;s that easy!</p>
 <dl class="docutils">
 <dt>A word on <cite>rect</cite> and <cite>mask</cite>:</dt>
-<dd><p class="first">In pygame, <cite>Sprite</cite> has the <cite>rect</cite> attribute and optionally the
-<cite>mask</cite> attribute. Both <cite>rect</cite> and <cite>mask</cite> sprite attributes are the
-primary data used in collision detection.</p>
-<p>In this implementation, <cite>Frame</cite> and <cite>AnimatedSprite</cite> both have the
-<cite>mask</cite> and <cite>rect</cite> attributes. Don&#8217;t use <cite>rect for positional stuff,
-e.g., don&#8217;t do something like `animatedsprite.rect.topleft = (11, 22)</cite>.
-The <cite>mask</cite> and <cite>rect</cite> of an <cite>AnimatedSprite</cite> are merely a reference to
-the current <cite>Frame</cite>&#8216;s <cite>rect</cite> and <cite>mask</cite>! When you load an animated
-sprite, you can specify a threshold:</p>
+<dd><p class="first"><cite>pygame.Sprite</cite> has the <cite>rect</cite> attribute and _optionally_ the
+<cite>mask</cite> attribute. AnimatedSprite gets those attributes from
+its frames, however there are some important notes regarding
+these two properties, AnimatedSprite.rect (always there) and
+AnimatedSprite.mask (optional)...</p>
+<p>AnimatedSprite.rect.size is updated with the current frame&#8217;s
+size every time you use AnimatedSprite.update(). This means you
+can use AnimatedSprite.rect for position on screen or position
+on map, whatever, because AnimatedSprite.rect.topleft won&#8217;t change
+unless _you_ change it!</p>
+<p>Likewise, AnimatedSprite.mask is set to the current frame&#8217;s mask,
+if you told AnimatedSprite to generate a mask (it&#8217;s optional).
+There are plans in the near future to allow for a single custom
+mask or ways to provide custom frame masks.</p>
+<p>When you load an animated sprite, you can specify a threshold:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">AnimatedSprite</span><span class="o">.</span><span class="n">from_gif</span><span class="p">(</span><span class="s1">&#39;example.gif&#39;</span><span class="p">,</span>
 <span class="gp">... </span>                        <span class="n">mask_threshold</span><span class="o">=</span><span class="mi">254</span><span class="p">)</span>  
 </pre></div>
