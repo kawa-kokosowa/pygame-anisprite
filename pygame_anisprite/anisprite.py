@@ -1,25 +1,32 @@
 """Painless animated sprites which are pygame.sprite.Sprite objects.
 
-Animated sprites from GIF, and all YOU have to remember is to `update(timedelta)`!
-You just have to call `update()` once per loop with the timedelta:
+Animated sprites are loaded from GIF, but there will be other ways
+very soon! When using an AnimatedSprite you must remember to update
+it every main loop iteration with timedelta:
 
   >>> AnimatedSprite.from_gif('example.gif')  # doctest: +SKIP
   >>> timedelta = clock.get_time()  # doctest: +SKIP
   >>> animated_sprite.update(timedelta)  # doctest: +SKIP
 
-Treat it like a normal pygame sprite, because it is! It's that easy!
-
 A word on `rect` and `mask`:
-    In pygame, `Sprite` has the `rect` attribute and optionally the
-    `mask` attribute. Both `rect` and `mask` sprite attributes are the
-    primary data used in collision detection.
+    `pygame.Sprite` has the `rect` attribute and _optionally_ the
+    `mask` attribute. AnimatedSprite gets those attributes from
+    its frames, however there are some important notes regarding
+    these two properties, AnimatedSprite.rect (always there) and
+    AnimatedSprite.mask (optional)...
 
-    In this implementation, `Frame` and `AnimatedSprite` both have the
-    `mask` and `rect` attributes. Don't use `rect for positional stuff,
-    e.g., don't do something like `animatedsprite.rect.topleft = (11, 22)`.
-    The `mask` and `rect` of an `AnimatedSprite` are merely a reference to
-    the current `Frame`'s `rect` and `mask`! When you load an animated
-    sprite, you can specify a threshold:
+    AnimatedSprite.rect.size is updated with the current frame's
+    size every time you use AnimatedSprite.update(). This means you
+    can use AnimatedSprite.rect for position on screen or position
+    on map, whatever, because AnimatedSprite.rect.topleft won't change
+    unless _you_ change it!
+
+    Likewise, AnimatedSprite.mask is set to the current frame's mask,
+    if you told AnimatedSprite to generate a mask (it's optional).
+    There are plans in the near future to allow for a single custom
+    mask or ways to provide custom frame masks.
+
+    When you load an animated sprite, you can specify a threshold:
 
       >>> AnimatedSprite.from_gif('example.gif',
       ...                         mask_threshold=254)  # doctest: +SKIP
