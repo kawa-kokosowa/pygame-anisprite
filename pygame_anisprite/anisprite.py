@@ -50,15 +50,17 @@ class Frame(object):
     """A frame of an AnimatedSprite animation.
 
     Attributes:
-        surface (pygame.Surface): The pygame image which is used
+        surface (pygame.Surface): The PyGame image which is used
             for a frame of an animation.
         mask (pygame.Mask): Mask automatically generated from the
-            supplied surface (see above). Only exists if mask_threshold
-            was >0 on init.
+            supplied surface (see above). Only exists if instantiated
+            with mask_threshold >0.
         duration (integer): Milliseconds this frame lasts. How
             long this frame is displayed in corresponding animation.
         start_time (integer): The animation position in milleseconds,
             when this frame will start being displayed.
+        stop_time (integer): The animation position in milleseconds,
+            when this frame will stop being displayed.
 
     See Also:
         * AnimatedSprite.frames_from_gif()
@@ -103,34 +105,35 @@ class Frame(object):
 
 # XXX: make sense to call it AniSprite?
 class AnimatedSprite(pygame.sprite.Sprite):
-    """Animated sprite with mask, loaded from GIF.
+    """An animated sprite.
 
-    Supposed to be mostly uniform with the Sprite API.
+    The main thing! Treat like a pygame.sprite.Sprite!
 
     Attributes:
         total_duration (int): The total duration of of this
             animation in milliseconds.
         image (pygame.Surface): Current surface belonging to
-            the active frame. Set once per tick through
-            the AnimatedSprite.update_state() method.
-        rect (pygame.Rect): Does not reflect position, only
-            area. Updated once per tick, to reflect current
-            frame's rect, in AnimatedSprite.update_state().
+            the active frame, both set by AnimatedSprite.update().
+        rect (pygame.Rect): When update() is called this
+            rect size changes to match the current frame's.
+            You'll want to checkout AnimatedSprite.update().
         mask (pygame.Mask): If the first frame had a mask
             attribute, then we assume all do, and this
             (optional) attribute points to the active
             frame's mask attribute.
-        active_frame_index (int): Frame # which is being
-            rendered/to be rendered. Also updated once per
-            tick, see the AnimatedSprite.update_state() method.
+        frames (list[Frame]): --
+        active_frame_index (int): The current frame, by `frames`
+            index. This is set by AnimatedSprite.update(). You'll
+            want to see the `frames` attribute and of course
+            AnimatedSprite.update().
         active_frame: The current surface representing this
-            animation at its current animation position. Set
-            once per tick through the update_state() method.
+            animation at its current animation position. The
+            AnimatedSprite.update() method sets this.
         animation_position (int): Animation position in
             milliseconds; milleseconds elapsed in this
             animation. This is used for determining
             which frame to select. Set once per tick through
-            the AnimatedSprite.update_state() method.
+            the AnimatedSprite.update() method.
 
     See Also:
         * :class:`pygame.sprite.Sprite`
