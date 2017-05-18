@@ -282,8 +282,8 @@ validity of Frame start_times and durations.</p>
 <dl class="class">
 <dt id="pygame_anisprite.anisprite.AnimatedSprite">
 <em class="property">class </em><code class="descclassname">pygame_anisprite.anisprite.</code><code class="descname">AnimatedSprite</code><span class="sig-paren">(</span><em>frames</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pygame_anisprite/anisprite.html#AnimatedSprite"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pygame_anisprite.anisprite.AnimatedSprite" title="Permalink to this definition">¶</a></dt>
-<dd><p>Animated sprite with mask, loaded from GIF.</p>
-<p>Supposed to be mostly uniform with the Sprite API.</p>
+<dd><p>An animated sprite.</p>
+<p>The main thing! Treat like a pygame.sprite.Sprite!</p>
 <dl class="attribute">
 <dt id="pygame_anisprite.anisprite.AnimatedSprite.total_duration">
 <code class="descname">total_duration</code><a class="headerlink" href="#pygame_anisprite.anisprite.AnimatedSprite.total_duration" title="Permalink to this definition">¶</a></dt>
@@ -295,16 +295,15 @@ animation in milliseconds.</p>
 <dt id="pygame_anisprite.anisprite.AnimatedSprite.image">
 <code class="descname">image</code><a class="headerlink" href="#pygame_anisprite.anisprite.AnimatedSprite.image" title="Permalink to this definition">¶</a></dt>
 <dd><p><em>pygame.Surface</em> &#8211; Current surface belonging to
-the active frame. Set once per tick through
-the AnimatedSprite.update_state() method.</p>
+the active frame, both set by AnimatedSprite.update().</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygame_anisprite.anisprite.AnimatedSprite.rect">
 <code class="descname">rect</code><a class="headerlink" href="#pygame_anisprite.anisprite.AnimatedSprite.rect" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>pygame.Rect</em> &#8211; Does not reflect position, only
-area. Updated once per tick, to reflect current
-frame&#8217;s rect, in AnimatedSprite.update_state().</p>
+<dd><p><em>pygame.Rect</em> &#8211; When update() is called this
+rect size changes to match the current frame&#8217;s.
+You&#8217;ll want to checkout AnimatedSprite.update().</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -317,19 +316,26 @@ frame&#8217;s mask attribute.</p>
 </dd></dl>
 
 <dl class="attribute">
+<dt id="pygame_anisprite.anisprite.AnimatedSprite.frames">
+<code class="descname">frames</code><a class="headerlink" href="#pygame_anisprite.anisprite.AnimatedSprite.frames" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>list[Frame]</em> &#8211; &#8211;</p>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="pygame_anisprite.anisprite.AnimatedSprite.active_frame_index">
 <code class="descname">active_frame_index</code><a class="headerlink" href="#pygame_anisprite.anisprite.AnimatedSprite.active_frame_index" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>int</em> &#8211; Frame # which is being
-rendered/to be rendered. Also updated once per
-tick, see the AnimatedSprite.update_state() method.</p>
+<dd><p><em>int</em> &#8211; The current frame, by <cite>frames</cite>
+index. This is set by AnimatedSprite.update(). You&#8217;ll
+want to see the <cite>frames</cite> attribute and of course
+AnimatedSprite.update().</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygame_anisprite.anisprite.AnimatedSprite.active_frame">
 <code class="descname">active_frame</code><a class="headerlink" href="#pygame_anisprite.anisprite.AnimatedSprite.active_frame" title="Permalink to this definition">¶</a></dt>
 <dd><p>The current surface representing this
-animation at its current animation position. Set
-once per tick through the update_state() method.</p>
+animation at its current animation position. The
+AnimatedSprite.update() method sets this.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -339,7 +345,7 @@ once per tick through the update_state() method.</p>
 milliseconds; milleseconds elapsed in this
 animation. This is used for determining
 which frame to select. Set once per tick through
-the AnimatedSprite.update_state() method.</p>
+the AnimatedSprite.update() method.</p>
 </dd></dl>
 
 <div class="admonition seealso">

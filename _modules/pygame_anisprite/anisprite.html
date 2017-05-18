@@ -207,15 +207,17 @@
     <span class="sd">&quot;&quot;&quot;A frame of an AnimatedSprite animation.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        surface (pygame.Surface): The pygame image which is used</span>
+<span class="sd">        surface (pygame.Surface): The PyGame image which is used</span>
 <span class="sd">            for a frame of an animation.</span>
 <span class="sd">        mask (pygame.Mask): Mask automatically generated from the</span>
-<span class="sd">            supplied surface (see above). Only exists if mask_threshold</span>
-<span class="sd">            was &gt;0 on init.</span>
+<span class="sd">            supplied surface (see above). Only exists if instantiated</span>
+<span class="sd">            with mask_threshold &gt;0.</span>
 <span class="sd">        duration (integer): Milliseconds this frame lasts. How</span>
 <span class="sd">            long this frame is displayed in corresponding animation.</span>
 <span class="sd">        start_time (integer): The animation position in milleseconds,</span>
 <span class="sd">            when this frame will start being displayed.</span>
+<span class="sd">        stop_time (integer): The animation position in milleseconds,</span>
+<span class="sd">            when this frame will stop being displayed.</span>
 
 <span class="sd">    See Also:</span>
 <span class="sd">        * AnimatedSprite.frames_from_gif()</span>
@@ -260,34 +262,35 @@
 
 <span class="c1"># XXX: make sense to call it AniSprite?</span>
 <div class="viewcode-block" id="AnimatedSprite"><a class="viewcode-back" href="../../anisprite.html#pygame_anisprite.anisprite.AnimatedSprite">[docs]</a><span class="k">class</span> <span class="nc">AnimatedSprite</span><span class="p">(</span><span class="n">pygame</span><span class="o">.</span><span class="n">sprite</span><span class="o">.</span><span class="n">Sprite</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Animated sprite with mask, loaded from GIF.</span>
+    <span class="sd">&quot;&quot;&quot;An animated sprite.</span>
 
-<span class="sd">    Supposed to be mostly uniform with the Sprite API.</span>
+<span class="sd">    The main thing! Treat like a pygame.sprite.Sprite!</span>
 
 <span class="sd">    Attributes:</span>
 <span class="sd">        total_duration (int): The total duration of of this</span>
 <span class="sd">            animation in milliseconds.</span>
 <span class="sd">        image (pygame.Surface): Current surface belonging to</span>
-<span class="sd">            the active frame. Set once per tick through</span>
-<span class="sd">            the AnimatedSprite.update_state() method.</span>
-<span class="sd">        rect (pygame.Rect): Does not reflect position, only</span>
-<span class="sd">            area. Updated once per tick, to reflect current</span>
-<span class="sd">            frame&#39;s rect, in AnimatedSprite.update_state().</span>
+<span class="sd">            the active frame, both set by AnimatedSprite.update().</span>
+<span class="sd">        rect (pygame.Rect): When update() is called this</span>
+<span class="sd">            rect size changes to match the current frame&#39;s.</span>
+<span class="sd">            You&#39;ll want to checkout AnimatedSprite.update().</span>
 <span class="sd">        mask (pygame.Mask): If the first frame had a mask</span>
 <span class="sd">            attribute, then we assume all do, and this</span>
 <span class="sd">            (optional) attribute points to the active</span>
 <span class="sd">            frame&#39;s mask attribute.</span>
-<span class="sd">        active_frame_index (int): Frame # which is being</span>
-<span class="sd">            rendered/to be rendered. Also updated once per</span>
-<span class="sd">            tick, see the AnimatedSprite.update_state() method.</span>
+<span class="sd">        frames (list[Frame]): --</span>
+<span class="sd">        active_frame_index (int): The current frame, by `frames`</span>
+<span class="sd">            index. This is set by AnimatedSprite.update(). You&#39;ll</span>
+<span class="sd">            want to see the `frames` attribute and of course</span>
+<span class="sd">            AnimatedSprite.update().</span>
 <span class="sd">        active_frame: The current surface representing this</span>
-<span class="sd">            animation at its current animation position. Set</span>
-<span class="sd">            once per tick through the update_state() method.</span>
+<span class="sd">            animation at its current animation position. The</span>
+<span class="sd">            AnimatedSprite.update() method sets this.</span>
 <span class="sd">        animation_position (int): Animation position in</span>
 <span class="sd">            milliseconds; milleseconds elapsed in this</span>
 <span class="sd">            animation. This is used for determining</span>
 <span class="sd">            which frame to select. Set once per tick through</span>
-<span class="sd">            the AnimatedSprite.update_state() method.</span>
+<span class="sd">            the AnimatedSprite.update() method.</span>
 
 <span class="sd">    See Also:</span>
 <span class="sd">        * :class:`pygame.sprite.Sprite`</span>
